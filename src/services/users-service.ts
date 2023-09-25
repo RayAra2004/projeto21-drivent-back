@@ -30,8 +30,13 @@ async function canEnrollOrFail() {
   }
 }
 
+async function get(userId: number) {
+  return await userRepository.get(userId);
+}
+
 export type CreateUserParams = Pick<User, 'email' | 'password'>;
 
 export const userService = {
   createUser,
+  get,
 };

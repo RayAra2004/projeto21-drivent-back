@@ -12,7 +12,7 @@ async function getTicket(id: number): Promise<Ticket> {
   });
 }
 
-async function createTicket(ticketTypeId: number, enrollmentId: number) {
+async function createTicket(ticketTypeId: number, enrollmentId: number): Promise<CreateTicket> {
   return await prisma.ticket.create({
     data: {
       enrollmentId,
@@ -40,6 +40,24 @@ async function createTicket(ticketTypeId: number, enrollmentId: number) {
     },
   });
 }
+
+export type CreateTicket = {
+  id: number;
+  status: string;
+  ticketTypeId: number;
+  enrollmentId: number;
+  TicketType: {
+    id: number;
+    name: string;
+    price: number;
+    isRemote: boolean;
+    includesHotel: boolean;
+    createdAt: Date;
+    updatedAt: Date;
+  };
+  createdAt: Date;
+  updatedAt: Date;
+};
 
 export const ticketRepository = {
   getTypesTickets,

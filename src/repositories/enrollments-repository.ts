@@ -25,7 +25,7 @@ async function upsert(
 }
 
 async function get(userId: number) {
-  return prisma.enrollment.findFirst({
+  return prisma.enrollment.findUnique({
     where: { userId },
   });
 }
