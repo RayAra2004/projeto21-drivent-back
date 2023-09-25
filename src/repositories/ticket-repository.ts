@@ -12,7 +12,37 @@ async function getTicket(id: number): Promise<Ticket> {
   });
 }
 
+async function createTicket(ticketTypeId: number, enrollmentId: number) {
+  return await prisma.ticket.create({
+    data: {
+      enrollmentId,
+      ticketTypeId,
+      status: 'RESERVED',
+    },
+    select: {
+      id: true,
+      status: true,
+      ticketTypeId: true,
+      enrollmentId: true,
+      createdAt: true,
+      updatedAt: true,
+      TicketType: {
+        select: {
+          id: true,
+          name: true,
+          price: true,
+          isRemote: true,
+          includesHotel: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      },
+    },
+  });
+}
+
 export const ticketRepository = {
   getTypesTickets,
   getTicket,
+  createTicket,
 };
