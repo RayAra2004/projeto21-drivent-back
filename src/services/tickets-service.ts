@@ -19,6 +19,12 @@ async function getTicket(id: number): Promise<Ticket> {
   return ticket;
 }
 
+async function getTicketByUser(ticketId: number, userId: number): Promise<Ticket> {
+  const enrollmentId = await enrollmentsService.getEnrollment(userId);
+
+  return ticketRepository.getTicketByUser(ticketId, enrollmentId);
+}
+
 async function createTicket(userId: number, ticketTypeId: number): Promise<CreateTicket> {
   if (ticketTypeId === null || ticketTypeId === undefined) throw badRequest('TicketTypeId is required!');
   const enrollmentId = await enrollmentsService.getEnrollment(userId);
@@ -29,4 +35,5 @@ export const ticketsService = {
   getTypesTickets,
   getTicket,
   createTicket,
+  getTicketByUser,
 };
