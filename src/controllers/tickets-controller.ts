@@ -1,7 +1,7 @@
 import { Response } from 'express';
 import httpStatus from 'http-status';
 import { AuthenticatedRequest } from '@/middlewares';
-import { ticketsService } from '@/services/tickets-service';
+import { ticketsService } from '@/services';
 
 export async function getTypesTickets(req: AuthenticatedRequest, res: Response): Promise<void> {
   const typeTickets = await ticketsService.getTypesTickets();
