@@ -8,6 +8,10 @@ async function getTypesTickets(): Promise<TicketType[]> {
   return typeTickets;
 }
 
+async function getTypeTicketByTicket(ticket: Ticket): Promise<TicketType> {
+  return await ticketsRepository.getTypeTicketByTicket(ticket.ticketTypeId);
+}
+
 async function getTicket(id: number): Promise<Ticket> {
   const enrollmentId = await enrollmentsService.getEnrollment(id);
 
@@ -35,4 +39,5 @@ export const ticketsService = {
   getTicket,
   createTicket,
   getTicketByUser,
+  getTypeTicketByTicket,
 };

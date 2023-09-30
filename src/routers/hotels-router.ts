@@ -1,9 +1,9 @@
 import { Router } from 'express';
 import { authenticateToken } from '@/middlewares';
-import { getHotels } from '@/controllers';
+import { getHotels, getRoomsByHotel } from '@/controllers';
 
 const hotelsRouter = Router();
 
-hotelsRouter.all('/*', authenticateToken).get('/', getHotels).get('/:hotelId');
+hotelsRouter.all('/*', authenticateToken).get('/', getHotels).get('/:hotelId', getRoomsByHotel);
 
 export { hotelsRouter };
