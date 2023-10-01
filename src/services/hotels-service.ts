@@ -6,12 +6,13 @@ import { notFoundError, paymentRequired } from '@/errors';
 async function isValid(userId: number) {
   const ticket = await ticketsService.getTicket(userId);
   const ticketType = await ticketsService.getTypeTicketByTicket(ticket);
-  const booking = await hotelsRepository.getBookings(userId);
-
-  if (booking.length === 0) throw notFoundError();
 
   if (ticket.status === TicketStatus.RESERVED || ticketType.isRemote || !ticketType.includesHotel)
     throw paymentRequired();
+
+  const booking = await hotelsRepository.getBookings(userId);
+
+  if (booking.length === 0) throw notFoundError();
 }
 
 async function getHotels(userId: number) {

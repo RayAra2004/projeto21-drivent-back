@@ -69,7 +69,7 @@ describe('GET /hotels', () => {
       expect(response.status).toEqual(httpStatus.NOT_FOUND);
     });
 
-    it('return status 404 if there is enrollment, ticket, but no hotel', async () => {
+    it('return status 402 if there is enrollment, ticket, but no hotel', async () => {
       const user = await createUser();
       const token = await generateValidToken(user);
       const enrollment = await createEnrollmentWithAddress(user);
@@ -78,10 +78,10 @@ describe('GET /hotels', () => {
 
       const response = await server.get('/hotels/').set('Authorization', `Bearer ${token}`);
 
-      expect(response.status).toEqual(httpStatus.NOT_FOUND);
+      expect(response.status).toEqual(httpStatus.PAYMENT_REQUIRED);
     });
 
-    it('return status 404 if there is enrollment, ticket, hotel, but no booking', async () => {
+    it('return status 402 if there is enrollment, ticket, hotel, but no booking', async () => {
       const user = await createUser();
       const token = await generateValidToken(user);
       const enrollment = await createEnrollmentWithAddress(user);
@@ -92,7 +92,7 @@ describe('GET /hotels', () => {
 
       const response = await server.get('/hotels/').set('Authorization', `Bearer ${token}`);
 
-      expect(response.status).toEqual(httpStatus.NOT_FOUND);
+      expect(response.status).toEqual(httpStatus.PAYMENT_REQUIRED);
     });
 
     it('return status 402 if there is enrollment, ticket, booking, but with ticket without paying', async () => {
@@ -221,7 +221,7 @@ describe('GET /hotels/:id', () => {
       expect(response.status).toEqual(httpStatus.NOT_FOUND);
     });
 
-    it('return status 404 if there is enrollment, ticket, but no hotel', async () => {
+    it('return status 402 if there is enrollment, ticket, but no hotel', async () => {
       const user = await createUser();
       const token = await generateValidToken(user);
       const enrollment = await createEnrollmentWithAddress(user);
@@ -232,10 +232,10 @@ describe('GET /hotels/:id', () => {
         .get(`/hotels/${faker.datatype.number({ min: 1, max: 50 })}`)
         .set('Authorization', `Bearer ${token}`);
 
-      expect(response.status).toEqual(httpStatus.NOT_FOUND);
+      expect(response.status).toEqual(httpStatus.PAYMENT_REQUIRED);
     });
 
-    it('return status 404 if there is enrollment, ticket, hotel, but no booking', async () => {
+    it('return status 402 if there is enrollment, ticket, hotel, but no booking', async () => {
       const user = await createUser();
       const token = await generateValidToken(user);
       const enrollment = await createEnrollmentWithAddress(user);
@@ -248,7 +248,7 @@ describe('GET /hotels/:id', () => {
         .get(`/hotels/${faker.datatype.number({ min: 1, max: 50 })}`)
         .set('Authorization', `Bearer ${token}`);
 
-      expect(response.status).toEqual(httpStatus.NOT_FOUND);
+      expect(response.status).toEqual(httpStatus.PAYMENT_REQUIRED);
     });
 
     it('return status 402 if there is enrollment, ticket, booking, but with ticket without paying', async () => {
