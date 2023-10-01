@@ -1,12 +1,6 @@
 import { Hotel } from '@prisma/client';
 import { prisma } from '@/config';
 
-async function getBookings(userId: number) {
-  return await prisma.booking.findMany({
-    where: { userId },
-  });
-}
-
 async function getHotels(): Promise<Hotel[]> {
   return await prisma.hotel.findMany({
     select: {
@@ -28,6 +22,5 @@ async function getRoomsByHotel(hotelId: number) {
 
 export const hotelsRepository = {
   getHotels,
-  getBookings,
   getRoomsByHotel,
 };

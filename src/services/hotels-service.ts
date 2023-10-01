@@ -10,9 +10,9 @@ async function isValid(userId: number) {
   if (ticket.status === TicketStatus.RESERVED || ticketType.isRemote || !ticketType.includesHotel)
     throw paymentRequired();
 
-  const booking = await hotelsRepository.getBookings(userId);
+  const hotels = await hotelsRepository.getHotels();
 
-  if (booking.length === 0) throw notFoundError();
+  if (hotels.length === 0) throw notFoundError();
 }
 
 async function getHotels(userId: number) {

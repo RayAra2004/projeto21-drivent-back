@@ -5,7 +5,6 @@ import * as jwt from 'jsonwebtoken';
 import { TicketStatus } from '@prisma/client';
 import { cleanDb, generateValidToken } from '../helpers';
 import {
-  createBooking,
   createEnrollmentWithAddress,
   createRoom,
   createTicket,
@@ -81,40 +80,26 @@ describe('GET /hotels', () => {
       expect(response.status).toEqual(httpStatus.PAYMENT_REQUIRED);
     });
 
-    it('return status 402 if there is enrollment, ticket, hotel, but no booking', async () => {
+    it('return status 402 if there is enrollment, ticket, hotel, but with ticket without paying', async () => {
       const user = await createUser();
       const token = await generateValidToken(user);
       const enrollment = await createEnrollmentWithAddress(user);
       const ticketType = await createTicketType();
       await createTicket(enrollment.id, ticketType.id, TicketStatus.RESERVED);
       await createRoom();
-      await createBooking();
 
       const response = await server.get('/hotels/').set('Authorization', `Bearer ${token}`);
 
       expect(response.status).toEqual(httpStatus.PAYMENT_REQUIRED);
     });
 
-    it('return status 402 if there is enrollment, ticket, booking, but with ticket without paying', async () => {
-      const user = await createUser();
-      const token = await generateValidToken(user);
-      const enrollment = await createEnrollmentWithAddress(user);
-      const ticketType = await createTicketType();
-      await createTicket(enrollment.id, ticketType.id, TicketStatus.RESERVED);
-      await createBooking(user);
-
-      const response = await server.get('/hotels/').set('Authorization', `Bearer ${token}`);
-
-      expect(response.status).toEqual(httpStatus.PAYMENT_REQUIRED);
-    });
-
-    it('return status 402 if there is enrollment, ticket, booking, but with ticket is remote', async () => {
+    it('return status 402 if there is enrollment, ticket, hotel, but with ticket is remote', async () => {
       const user = await createUser();
       const token = await generateValidToken(user);
       const enrollment = await createEnrollmentWithAddress(user);
       const ticketType = await createTicketType(true);
       const ticket = await createTicket(enrollment.id, ticketType.id, TicketStatus.RESERVED);
-      await createBooking(user);
+      await createRoom();
 
       const body = { ticketId: ticket.id, cardData: generateCreditCardData() };
       await server.post('/payments/process').set('Authorization', `Bearer ${token}`).send(body);
@@ -130,7 +115,7 @@ describe('GET /hotels', () => {
       const enrollment = await createEnrollmentWithAddress(user);
       const ticketType = await createTicketType(false, false);
       const ticket = await createTicket(enrollment.id, ticketType.id, TicketStatus.RESERVED);
-      await createBooking(user);
+      await createRoom();
 
       const body = { ticketId: ticket.id, cardData: generateCreditCardData() };
       await server.post('/payments/process').set('Authorization', `Bearer ${token}`).send(body);
@@ -146,7 +131,7 @@ describe('GET /hotels', () => {
       const enrollment = await createEnrollmentWithAddress(user);
       const ticketType = await createTicketType(false, true);
       const ticket = await createTicket(enrollment.id, ticketType.id, TicketStatus.RESERVED);
-      await createBooking(user);
+      await createRoom();
 
       const body = { ticketId: ticket.id, cardData: generateCreditCardData() };
       await server.post('/payments/process').set('Authorization', `Bearer ${token}`).send(body);
@@ -235,14 +220,13 @@ describe('GET /hotels/:id', () => {
       expect(response.status).toEqual(httpStatus.PAYMENT_REQUIRED);
     });
 
-    it('return status 402 if there is enrollment, ticket, hotel, but no booking', async () => {
+    it('return status 402 if there is enrollment, ticket, but with ticket without paying', async () => {
       const user = await createUser();
       const token = await generateValidToken(user);
       const enrollment = await createEnrollmentWithAddress(user);
       const ticketType = await createTicketType();
       await createTicket(enrollment.id, ticketType.id, TicketStatus.RESERVED);
       await createRoom();
-      await createBooking();
 
       const response = await server
         .get(`/hotels/${faker.datatype.number({ min: 1, max: 50 })}`)
@@ -251,28 +235,13 @@ describe('GET /hotels/:id', () => {
       expect(response.status).toEqual(httpStatus.PAYMENT_REQUIRED);
     });
 
-    it('return status 402 if there is enrollment, ticket, booking, but with ticket without paying', async () => {
-      const user = await createUser();
-      const token = await generateValidToken(user);
-      const enrollment = await createEnrollmentWithAddress(user);
-      const ticketType = await createTicketType();
-      await createTicket(enrollment.id, ticketType.id, TicketStatus.RESERVED);
-      await createBooking(user);
-
-      const response = await server
-        .get(`/hotels/${faker.datatype.number({ min: 1, max: 50 })}`)
-        .set('Authorization', `Bearer ${token}`);
-
-      expect(response.status).toEqual(httpStatus.PAYMENT_REQUIRED);
-    });
-
-    it('return status 402 if there is enrollment, ticket, booking, but with ticket is remote', async () => {
+    it('return status 402 if there is enrollment, ticket, but with ticket is remote', async () => {
       const user = await createUser();
       const token = await generateValidToken(user);
       const enrollment = await createEnrollmentWithAddress(user);
       const ticketType = await createTicketType(true);
       const ticket = await createTicket(enrollment.id, ticketType.id, TicketStatus.RESERVED);
-      await createBooking(user);
+      await createRoom();
 
       const body = { ticketId: ticket.id, cardData: generateCreditCardData() };
       await server.post('/payments/process').set('Authorization', `Bearer ${token}`).send(body);
@@ -284,13 +253,13 @@ describe('GET /hotels/:id', () => {
       expect(response.status).toEqual(httpStatus.PAYMENT_REQUIRED);
     });
 
-    it('return status 402 if there is enrollment, ticket, booking, but with hotel not included', async () => {
+    it('return status 402 if there is enrollment, ticket, but with hotel not included', async () => {
       const user = await createUser();
       const token = await generateValidToken(user);
       const enrollment = await createEnrollmentWithAddress(user);
       const ticketType = await createTicketType(false, false);
       const ticket = await createTicket(enrollment.id, ticketType.id, TicketStatus.RESERVED);
-      await createBooking(user);
+      await createRoom();
 
       const body = { ticketId: ticket.id, cardData: generateCreditCardData() };
       await server.post('/payments/process').set('Authorization', `Bearer ${token}`).send(body);
@@ -308,7 +277,7 @@ describe('GET /hotels/:id', () => {
       const enrollment = await createEnrollmentWithAddress(user);
       const ticketType = await createTicketType(false, true);
       const ticket = await createTicket(enrollment.id, ticketType.id, TicketStatus.RESERVED);
-      const { hotel } = await createBooking(user);
+      const { hotel } = await createRoom();
 
       const body = { ticketId: ticket.id, cardData: generateCreditCardData() };
       await server.post('/payments/process').set('Authorization', `Bearer ${token}`).send(body);
