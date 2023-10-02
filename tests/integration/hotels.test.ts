@@ -109,7 +109,7 @@ describe('GET /hotels', () => {
       expect(response.status).toEqual(httpStatus.PAYMENT_REQUIRED);
     });
 
-    it('return status 402 if there is enrollment, ticket, booking, but with hotel not included', async () => {
+    it('return status 402 if there is enrollment, ticket, but with hotel not included', async () => {
       const user = await createUser();
       const token = await generateValidToken(user);
       const enrollment = await createEnrollmentWithAddress(user);
