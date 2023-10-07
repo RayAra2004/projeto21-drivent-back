@@ -25,7 +25,12 @@ async function getRoomsByHotel(hotelId: number, userId: number) {
   return await hotelsRepository.getRoomsByHotel(hotelId);
 }
 
+async function getRoomById(roomId: number) {
+  return await hotelsRepository.getRoomById(roomId);
+}
+
 export const hotelsService = {
   getHotels,
   getRoomsByHotel,
+  getRoomById,
 };
