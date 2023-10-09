@@ -26,7 +26,7 @@ async function isValidCreate(userId: number, roomId: number) {
 
   const availableVacancies = Number(room.capacity) - Number(await bookingRepository.countBookingsInRoom(roomId));
 
-  if (availableVacancies <= 0) throw forbiddenError();
+  if (availableVacancies <= 0) throw forbiddenError('Number of vacancies exceeded.');
 }
 
 async function createBooking(userId: number, roomId: number): Promise<number> {
@@ -66,4 +66,6 @@ export const bookingService = {
   getBooking,
   createBooking,
   updateBooking,
+  isValidCreate,
+  isValidUpdate,
 };

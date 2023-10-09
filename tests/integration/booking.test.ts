@@ -128,7 +128,7 @@ describe('POST /booking', () => {
       const { status } = await server
         .post('/booking/')
         .set('Authorization', `Bearer ${token}`)
-        .send({ roomId: faker.datatype.number({ max: 10 }) });
+        .send({ roomId: faker.datatype.number({ max: 100 }) });
 
       expect(status).toBe(httpStatus.NOT_FOUND);
     });

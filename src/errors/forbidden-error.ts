@@ -1,8 +1,8 @@
 import { ApplicationError } from '@/protocols';
 
-export function forbiddenError(): ApplicationError {
+export function forbiddenError(message = 'Request not accepted!'): ApplicationError {
   return {
     name: 'Forbidden',
-    message: 'Number of vacancies exceeded.',
+    message,
   };
 }
